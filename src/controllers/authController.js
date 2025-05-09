@@ -10,23 +10,43 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { username, email, password } = req.body;
+    const userData = req.body;
 
     // Check if the user already exists
-    const existingUser = await User.findByEmail(email);
+    const existingUser = await User.findByEmail(userData.email);
     if (existingUser) {
       return res.status(409).json({ message: 'Email already exists' });
     }
 
     // Create a new user
-    const userId = await User.create(username, email, password);
+    const userId = await User.create(userData);
+    
+    // Get the complete user data for the token
+    const newUser = await User.findByEmail(userData.email);
 
     // Generate JWT token
-    const token = generateToken(userId);
+    const token = generateToken(newUser);
+
+    // Create a response object with user data (excluding sensitive information)
+    const userResponse = {
+      id: newUser.id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      phone: newUser.phone,
+      countryCode: newUser.countryCode,
+      userType: newUser.userType,
+      documentType: newUser.documentType,
+      documentNumber: newUser.documentNumber,
+      alternativeContact: newUser.alternativeContact,
+      emergencyContact: newUser.emergencyContact
+      // Payment info excluded for security
+    };
 
     res.status(201).json({
       message: 'User registered successfully',
-      token
+      token,
+      user: userResponse
     });
   } catch (error) {
     next(error);
@@ -56,11 +76,28 @@ exports.login = async (req, res, next) => {
     }
 
     // Generate JWT token
-    const token = generateToken(user.id);
+    const token = generateToken(user);
+
+    // Create a response object with user data (excluding sensitive information)
+    const userResponse = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      countryCode: user.countryCode,
+      userType: user.userType,
+      documentType: user.documentType,
+      documentNumber: user.documentNumber,
+      alternativeContact: user.alternativeContact,
+      emergencyContact: user.emergencyContact
+      // Payment info excluded for security
+    };
 
     res.status(200).json({
       message: 'Login successful',
-      token
+      token,
+      user: userResponse
     });
   } catch (error) {
     next(error);
