@@ -1,0 +1,28 @@
+# node_modules
+node_modules
+
+# build
+build
+
+# logs
+logs
+
+# environment variables
+.env
+
+# editor settings
+.idea
+.vscode
+
+# temporary files
+tmp
+
+# dependencies
+dist
+
+# database
+*.sqlite
+
+# other
+.DS_Store
+Thumbs.db

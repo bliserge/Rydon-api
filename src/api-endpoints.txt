@@ -1,0 +1,1232 @@
+# RYDON CAR SHARING PLATFORM API ENDPOINTS
+
+## AUTHENTICATION ENDPOINTS
+
+### Register User
+**Endpoint:** POST /api/auth/register
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "phone": "+1234567890"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "clz123abc456",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "isVerified": false,
+    "createdAt": "2025-05-19T09:00:00.000Z"
+  },
+  "message": "User registered successfully. Please verify your email."
+}
+```
+
+### Login
+**Endpoint:** POST /api/auth/login
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "clz123abc456",
+      "email": "user@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "isHost": false,
+      "isVerified": true
+    },
+    "tokens": {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "expiresIn": 3600
+    }
+  },
+  "message": "Login successful"
+}
+```
+
+## USER ENDPOINTS
+
+### Get Current User
+**Endpoint:** GET /api/users/me
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "clz123abc456",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "+1234567890",
+    "profileImage": "https://storage.example.com/profiles/user123.jpg",
+    "isHost": false,
+    "isVerified": true,
+    "createdAt": "2025-05-19T09:00:00.000Z"
+  }
+}
+```
+
+### Update Current User
+**Endpoint:** PUT /api/users/me
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "phone": "+1987654321"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "clz123abc456",
+    "email": "user@example.com",
+    "firstName": "John",
+    "lastName": "Smith",
+    "phone": "+1987654321",
+    "profileImage": "https://storage.example.com/profiles/user123.jpg",
+    "isHost": false,
+    "isVerified": true,
+    "updatedAt": "2025-05-19T10:00:00.000Z"
+  },
+  "message": "Profile updated successfully"
+}
+```
+
+## CAR ENDPOINTS
+
+### Get All Cars
+**Endpoint:** GET /api/cars
+
+**Query Parameters:**
+```
+page=1
+limit=10
+sort=newest|price-low|price-high|rating
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "car123",
+      "title": "Toyota Camry 2020",
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2020,
+      "pricePerDay": 45.00,
+      "location": "Kigali, Rwanda",
+      "rating": 4.8,
+      "reviewCount": 24,
+      "primaryImage": "https://storage.example.com/cars/car123-main.jpg",
+      "host": {
+        "id": "host456",
+        "firstName": "Emmanuel",
+        "lastName": "K",
+        "rating": 4.9
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 48,
+    "pages": 5
+  }
+}
+```
+
+### Create Car
+**Endpoint:** POST /api/cars
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "title": "BMW 3 Series 2020",
+  "make": "BMW",
+  "model": "3 Series",
+  "year": 2020,
+  "pricePerDay": 65.00,
+  "location": "Kigali, Rwanda",
+  "latitude": -1.9441,
+  "longitude": 30.0619,
+  "description": "Luxury BMW 3 Series with leather seats and premium features.",
+  "seats": 5,
+  "doors": 4,
+  "transmission": "Automatic",
+  "fuelType": "Gasoline",
+  "features": ["Leather Seats", "Navigation", "Sunroof"]
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "car789",
+    "title": "BMW 3 Series 2020",
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2020,
+    "pricePerDay": 65.00,
+    "createdAt": "2025-05-19T11:30:00.000Z"
+  },
+  "message": "Car created successfully"
+}
+```
+
+### Update Car
+**Endpoint:** PUT /api/cars/:id
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "title": "BMW 3 Series 2020 - Luxury Edition",
+  "pricePerDay": 70.00,
+  "description": "Updated description: Luxury BMW 3 Series with premium leather seats and advanced navigation system.",
+  "isAvailable": true,
+  "features": ["Leather Seats", "Navigation", "Sunroof", "Premium Sound"]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "car789",
+    "title": "BMW 3 Series 2020 - Luxury Edition",
+    "pricePerDay": 70.00,
+    "description": "Updated description: Luxury BMW 3 Series with premium leather seats and advanced navigation system.",
+    "isAvailable": true,
+    "updatedAt": "2025-05-19T12:15:00.000Z",
+    "features": [
+      {
+        "id": "feat101",
+        "name": "Leather Seats"
+      },
+      {
+        "id": "feat102",
+        "name": "Navigation"
+      },
+      {
+        "id": "feat103",
+        "name": "Sunroof"
+      },
+      {
+        "id": "feat104",
+        "name": "Premium Sound"
+      }
+    ]
+  },
+  "message": "Car updated successfully"
+}
+```
+
+### Delete Car
+**Endpoint:** DELETE /api/cars/:id
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Car deleted successfully"
+}
+```
+
+### Search Cars
+**Endpoint:** GET /api/cars/search
+
+**Query Parameters:**
+```
+location=Kigali,Rwanda
+startDate=2025-06-15T10:00:00.000Z
+endDate=2025-06-18T10:00:00.000Z
+minPrice=30
+maxPrice=100
+transmission=Automatic
+fuelType=Gasoline|Electric|Hybrid
+features=Air Conditioning,Bluetooth
+seats=5
+page=1
+limit=10
+sort=newest|price-low|price-high|rating
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "car123",
+      "title": "Toyota Camry 2020",
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2020,
+      "pricePerDay": 45.00,
+      "location": "Kigali, Rwanda",
+      "rating": 4.8,
+      "reviewCount": 24,
+      "primaryImage": "https://storage.example.com/cars/car123-main.jpg",
+      "host": {
+        "id": "host456",
+        "firstName": "Emmanuel",
+        "lastName": "K",
+        "rating": 4.9
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 12,
+    "pages": 2
+  }
+}
+```
+
+### Get Featured Cars
+**Endpoint:** GET /api/cars/featured
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "car123",
+      "title": "Toyota Camry 2020",
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2020,
+      "pricePerDay": 45.00,
+      "location": "Kigali, Rwanda",
+      "rating": 4.8,
+      "reviewCount": 24,
+      "primaryImage": "https://storage.example.com/cars/car123-main.jpg",
+      "host": {
+        "id": "host456",
+        "firstName": "Emmanuel",
+        "lastName": "K",
+        "rating": 4.9
+      }
+    }
+  ]
+}
+```
+
+### Car Images
+**Endpoint:** POST /api/cars/:id/images
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+Content-Type: multipart/form-data
+```
+
+**Request Body:**
+```
+Form data with key 'images' containing image files (multiple allowed)
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "img101",
+      "url": "https://storage.example.com/cars/car789-1.jpg",
+      "isPrimary": true
+    },
+    {
+      "id": "img102",
+      "url": "https://storage.example.com/cars/car789-2.jpg",
+      "isPrimary": false
+    }
+  ],
+  "message": "Images uploaded successfully"
+}
+```
+
+### Set Primary Car Image
+**Endpoint:** PUT /api/cars/:id/images/:imageId/set-primary
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "img102",
+    "isPrimary": true,
+    "updatedAt": "2025-05-19T12:30:00.000Z"
+  },
+  "message": "Primary image updated successfully"
+}
+```
+
+### Delete Car Image
+**Endpoint:** DELETE /api/cars/:id/images/:imageId
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Image deleted successfully"
+}
+```
+
+### Add Car Features
+**Endpoint:** POST /api/cars/:id/features
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "features": ["Bluetooth", "USB Charger", "Backup Camera"]
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "feat201",
+      "name": "Bluetooth"
+    },
+    {
+      "id": "feat202",
+      "name": "USB Charger"
+    },
+    {
+      "id": "feat203",
+      "name": "Backup Camera"
+    }
+  ],
+  "message": "Features added successfully"
+}
+```
+
+### Remove Car Feature
+**Endpoint:** DELETE /api/cars/:id/features/:featureId
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Feature removed successfully"
+}
+```
+
+## BOOKING ENDPOINTS
+
+### Create Booking
+**Endpoint:** POST /api/bookings
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "carId": "car123",
+  "startDate": "2025-06-15T10:00:00.000Z",
+  "endDate": "2025-06-18T10:00:00.000Z"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "book123",
+    "startDate": "2025-06-15T10:00:00.000Z",
+    "endDate": "2025-06-18T10:00:00.000Z",
+    "totalPrice": 135.00,
+    "status": "PENDING",
+    "carId": "car123",
+    "tenantId": "clz123abc456",
+    "hostId": "host456",
+    "createdAt": "2025-05-19T12:00:00.000Z",
+    "car": {
+      "id": "car123",
+      "title": "Toyota Camry 2020",
+      "make": "Toyota",
+      "model": "Camry",
+      "primaryImage": "https://storage.example.com/cars/car123-main.jpg"
+    }
+  },
+  "message": "Booking created successfully. Awaiting host confirmation."
+}
+```
+
+### Get User Bookings (as Tenant)
+**Endpoint:** GET /api/bookings/as-tenant
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters:**
+```
+page=1
+limit=10
+status=PENDING|CONFIRMED|CANCELLED|COMPLETED
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "book123",
+      "startDate": "2025-06-15T10:00:00.000Z",
+      "endDate": "2025-06-18T10:00:00.000Z",
+      "totalPrice": 135.00,
+      "status": "PENDING",
+      "createdAt": "2025-05-19T12:00:00.000Z",
+      "car": {
+        "id": "car123",
+        "title": "Toyota Camry 2020",
+        "make": "Toyota",
+        "model": "Camry",
+        "primaryImage": "https://storage.example.com/cars/car123-main.jpg"
+      },
+      "host": {
+        "id": "host456",
+        "firstName": "Emmanuel",
+        "lastName": "K",
+        "profileImage": "https://storage.example.com/profiles/host456.jpg",
+        "rating": 4.9
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 3,
+    "pages": 1
+  }
+}
+```
+
+### Update Booking Status
+**Endpoint:** PUT /api/bookings/:id/status
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "status": "CONFIRMED"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "book123",
+    "status": "CONFIRMED",
+    "updatedAt": "2025-05-19T14:30:00.000Z"
+  },
+  "message": "Booking status updated successfully"
+}
+```
+
+## REVIEW ENDPOINTS
+
+### Create Review
+**Endpoint:** POST /api/reviews
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "rating": 5,
+  "comment": "Great car! Very clean and drove perfectly. Host was very responsive.",
+  "bookingId": "book123",
+  "carId": "car123",
+  "revieweeId": "host456"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "rev123",
+    "rating": 5,
+    "comment": "Great car! Very clean and drove perfectly. Host was very responsive.",
+    "reviewerId": "clz123abc456",
+    "revieweeId": "host456",
+    "carId": "car123",
+    "bookingId": "book123",
+    "createdAt": "2025-06-20T09:15:00.000Z"
+  },
+  "message": "Review submitted successfully"
+}
+```
+
+### Get Car Reviews
+**Endpoint:** GET /api/reviews/car/:carId
+
+**Query Parameters:**
+```
+page=1
+limit=10
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "rev123",
+      "rating": 5,
+      "comment": "Great car! Very clean and drove perfectly. Host was very responsive.",
+      "reviewer": {
+        "id": "usr789",
+        "firstName": "John",
+        "lastName": "D",
+        "profileImage": "https://storage.example.com/profiles/usr789.jpg"
+      },
+      "createdAt": "2025-06-20T09:15:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 24,
+    "pages": 3
+  }
+}
+```
+
+## PAYMENT ENDPOINTS
+
+### Create Payment
+**Endpoint:** POST /api/payments
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "bookingId": "book123",
+  "paymentMethod": "card",
+  "paymentToken": "tok_visa"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "pay123",
+    "amount": 135.00,
+    "status": "COMPLETED",
+    "bookingId": "book123",
+    "paymentMethod": "card",
+    "transactionId": "ch_1J2NkL2eZvKYlo2CJOEFpaIx",
+    "createdAt": "2025-06-14T10:30:00.000Z"
+  },
+  "message": "Payment processed successfully"
+}
+```
+
+### Get Payments by Booking
+**Endpoint:** GET /api/payments/by-booking/:bookingId
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "pay123",
+      "amount": 135.00,
+      "status": "COMPLETED",
+      "paymentMethod": "card",
+      "transactionId": "ch_1J2NkL2eZvKYlo2CJOEFpaIx",
+      "createdAt": "2025-06-14T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+## MESSAGING ENDPOINTS
+
+### Get User Messages
+**Endpoint:** GET /api/messages
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters:**
+```
+page=1
+limit=20
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "msg123",
+      "content": "Hello, I'm interested in renting your car. Is it available next weekend?",
+      "senderId": "usr456",
+      "recipientId": "clz123abc456",
+      "isRead": false,
+      "createdAt": "2025-05-19T10:15:00.000Z",
+      "sender": {
+        "id": "usr456",
+        "firstName": "Sarah",
+        "lastName": "M",
+        "profileImage": "https://storage.example.com/profiles/usr456.jpg"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 5,
+    "pages": 1
+  }
+}
+```
+
+### Get Conversation
+**Endpoint:** GET /api/messages/:userId
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters:**
+```
+page=1
+limit=50
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "usr456",
+      "firstName": "Sarah",
+      "lastName": "M",
+      "profileImage": "https://storage.example.com/profiles/usr456.jpg"
+    },
+    "messages": [
+      {
+        "id": "msg122",
+        "content": "Hi, I have a Toyota Camry available for rent. When exactly do you need it?",
+        "senderId": "clz123abc456",
+        "recipientId": "usr456",
+        "isRead": true,
+        "createdAt": "2025-05-19T10:10:00.000Z"
+      },
+      {
+        "id": "msg123",
+        "content": "Hello, I'm interested in renting your car. Is it available next weekend?",
+        "senderId": "usr456",
+        "recipientId": "clz123abc456",
+        "isRead": false,
+        "createdAt": "2025-05-19T10:15:00.000Z"
+      }
+    ]
+  },
+  "pagination": {
+    "page": 1,
+    "limit": 50,
+    "total": 2,
+    "pages": 1
+  }
+}
+```
+
+### Send Message
+**Endpoint:** POST /api/messages
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "recipientId": "usr456",
+  "content": "Yes, the car is available next weekend. Would you like to make a booking?"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "msg124",
+    "content": "Yes, the car is available next weekend. Would you like to make a booking?",
+    "senderId": "clz123abc456",
+    "recipientId": "usr456",
+    "isRead": false,
+    "createdAt": "2025-05-19T12:45:00.000Z"
+  },
+  "message": "Message sent successfully"
+}
+```
+
+### Mark Message as Read
+**Endpoint:** PUT /api/messages/:id/read
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "msg123",
+    "isRead": true,
+    "updatedAt": "2025-05-19T12:50:00.000Z"
+  },
+  "message": "Message marked as read"
+}
+```
+
+## CAR AVAILABILITY ENDPOINTS
+
+### Check Car Availability
+**Endpoint:** GET /api/cars/:id/availability
+
+**Query Parameters:**
+```
+startDate=2025-06-15T10:00:00.000Z
+endDate=2025-06-18T10:00:00.000Z
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "isAvailable": true,
+    "unavailableDates": [
+      {
+        "startDate": "2025-06-20T10:00:00.000Z",
+        "endDate": "2025-06-25T10:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+### Update Car Availability
+**Endpoint:** PUT /api/cars/:id/availability
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Request Body:**
+```json
+{
+  "isAvailable": false,
+  "unavailableDates": [
+    {
+      "startDate": "2025-07-01T10:00:00.000Z",
+      "endDate": "2025-07-15T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "car123",
+    "isAvailable": false,
+    "unavailableDates": [
+      {
+        "startDate": "2025-06-20T10:00:00.000Z",
+        "endDate": "2025-06-25T10:00:00.000Z"
+      },
+      {
+        "startDate": "2025-07-01T10:00:00.000Z",
+        "endDate": "2025-07-15T10:00:00.000Z"
+      }
+    ],
+    "updatedAt": "2025-05-19T13:00:00.000Z"
+  },
+  "message": "Car availability updated successfully"
+}
+```
+
+## HOST DASHBOARD ENDPOINTS
+
+### Get Host Bookings
+**Endpoint:** GET /api/bookings/as-host
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters:**
+```
+page=1
+limit=10
+status=PENDING|CONFIRMED|CANCELLED|COMPLETED
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "book456",
+      "startDate": "2025-06-15T10:00:00.000Z",
+      "endDate": "2025-06-18T10:00:00.000Z",
+      "totalPrice": 135.00,
+      "status": "PENDING",
+      "createdAt": "2025-05-19T12:00:00.000Z",
+      "car": {
+        "id": "car123",
+        "title": "Toyota Camry 2020",
+        "make": "Toyota",
+        "model": "Camry",
+        "primaryImage": "https://storage.example.com/cars/car123-main.jpg"
+      },
+      "tenant": {
+        "id": "usr789",
+        "firstName": "John",
+        "lastName": "D",
+        "profileImage": "https://storage.example.com/profiles/usr789.jpg",
+        "rating": 4.7
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 5,
+    "pages": 1
+  }
+}
+```
+
+## LOCATION ENDPOINTS
+
+### Search Locations
+**Endpoint:** GET /api/locations/search
+
+**Query Parameters:**
+```
+query=Kigali
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "loc123",
+      "name": "Kigali, Rwanda",
+      "latitude": -1.9441,
+      "longitude": 30.0619
+    },
+    {
+      "id": "loc124",
+      "name": "Kigali Heights, Kigali, Rwanda",
+      "latitude": -1.9539,
+      "longitude": 30.0921
+    }
+  ]
+}
+```
+
+### Geocode Location
+**Endpoint:** GET /api/locations/geocode
+
+**Query Parameters:**
+```
+address=Kigali Heights, Kigali, Rwanda
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "latitude": -1.9539,
+    "longitude": 30.0921,
+    "formattedAddress": "Kigali Heights, KG 7 Ave, Kigali, Rwanda"
+  }
+}
+```
+
+## USER VERIFICATION ENDPOINTS
+
+### Upload Verification Documents
+**Endpoint:** POST /api/users/verify-documents
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+Content-Type: multipart/form-data
+```
+
+**Request Body:**
+```
+Form data with keys:
+- 'idDocument' containing ID document image
+- 'drivingLicense' containing driving license image
+- 'selfie' containing selfie image
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "documentsUploaded": [
+      "idDocument",
+      "drivingLicense",
+      "selfie"
+    ],
+    "verificationStatus": "PENDING",
+    "submittedAt": "2025-05-19T13:30:00.000Z"
+  },
+  "message": "Verification documents uploaded successfully. Verification in progress."
+}
+```
+
+### Check Verification Status
+**Endpoint:** GET /api/users/verification-status
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "verificationStatus": "PENDING",
+    "documentsUploaded": [
+      "idDocument",
+      "drivingLicense",
+      "selfie"
+    ],
+    "submittedAt": "2025-05-19T13:30:00.000Z",
+    "estimatedCompletionTime": "24-48 hours"
+  }
+}
+```
+
+## NOTIFICATION ENDPOINTS
+
+### Get User Notifications
+**Endpoint:** GET /api/notifications
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Query Parameters:**
+```
+page=1
+limit=20
+isRead=true|false
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "notif123",
+      "type": "BOOKING_REQUEST",
+      "message": "You have a new booking request for your Toyota Camry",
+      "isRead": false,
+      "createdAt": "2025-05-19T12:05:00.000Z"
+    },
+    {
+      "id": "notif124",
+      "type": "BOOKING_CONFIRMED",
+      "message": "Your booking for BMW 3 Series has been confirmed",
+      "isRead": true,
+      "createdAt": "2025-05-18T14:30:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 12,
+    "pages": 1
+  }
+}
+```
+
+### Mark Notification as Read
+**Endpoint:** PUT /api/notifications/:id/read
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "notif123",
+    "isRead": true,
+    "updatedAt": "2025-05-19T12:10:00.000Z"
+  },
+  "message": "Notification marked as read"
+}
+```
+
+### Mark All Notifications as Read
+**Endpoint:** PUT /api/notifications/read-all
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "data": {
+    "count": 5,
+    "updatedAt": "2025-05-19T12:15:00.000Z"
+  },
+  "message": "All notifications marked as read"
+}
+```
