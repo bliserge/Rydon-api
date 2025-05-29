@@ -7,7 +7,7 @@ async function up() {
       CREATE TABLE IF NOT EXISTS car_images (
         id INT AUTO_INCREMENT PRIMARY KEY,
         url VARCHAR(255) NOT NULL,
-        carId INT NOT NULL,
+        carId INT,
         isPrimary BOOLEAN NOT NULL DEFAULT false,
         FOREIGN KEY (carId) REFERENCES cars (id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
