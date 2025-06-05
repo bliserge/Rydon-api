@@ -10,7 +10,8 @@ const verifyToken = (req, res, next) => {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ 
       success: false,
-      message: 'Access denied. No token provided.' 
+      message: 'Access denied. No token provided.',
+      clearAuth: true // Signal to client to clear auth data
     });
   }
 
@@ -23,7 +24,8 @@ const verifyToken = (req, res, next) => {
   } catch (error) {
     res.status(401).json({ 
       success: false,
-      message: 'Invalid token' 
+      message: 'Invalid token',
+      clearAuth: true // Signal to client to clear auth data
     });
   }
 };

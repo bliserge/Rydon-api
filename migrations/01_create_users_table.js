@@ -28,6 +28,23 @@ async function up() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
     console.log('Users table created successfully');
+    
+    // Insert default admin user
+    await db.execute(`
+      INSERT INTO users (
+        email, password, firstName, lastName, phone, countryCode, 
+        userType, documentType, documentNumber, alternativeEmail, 
+        alternativePhone, emergencyContactName, emergencyContactPhone, 
+        emergencyContactRelationship, profileImage, isHost, isVerified
+      ) VALUES (
+        'bliserge34@gmail.com', 
+        '$2a$10$y3F.cKR5zFcoQj0BBBRM0OqP9ALJZwXYGgnssrfvL5fIHgWz.a3Wm', 
+        'Serge', 'Ishimwe', '784302922', '+1', 'Host', 
+        'Driver License', '123456789123456', 'fgh@gdfggh.gh', 
+        '567656756567', 'ghjghjgj', '1212121212', 'Parent', NULL, 1, 0
+      );
+    `);
+    console.log('Default user created successfully');
     return true;
   } catch (error) {
     console.error('Error creating users table:', error);

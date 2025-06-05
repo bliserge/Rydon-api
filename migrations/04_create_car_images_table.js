@@ -9,6 +9,9 @@ async function up() {
         url VARCHAR(255) NOT NULL,
         carId INT,
         isPrimary BOOLEAN NOT NULL DEFAULT false,
+        type VARCHAR(50) NOT NULL DEFAULT 'exterior' CHECK (type IN ('exterior', 'interior')),
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (carId) REFERENCES cars (id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);

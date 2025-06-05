@@ -6,9 +6,15 @@ async function up() {
     await db.execute(`
       CREATE TABLE IF NOT EXISTS bookings (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        startDate DATETIME NOT NULL,
-        endDate DATETIME NOT NULL,
+        pickupDate DATETIME NOT NULL,
+        pickupTime VARCHAR(10) NOT NULL,
+        returnDate DATETIME NOT NULL,
+        returnTime VARCHAR(10) NOT NULL,
         totalPrice FLOAT NOT NULL,
+        insuranceOption ENUM('basic', 'premium') NOT NULL DEFAULT 'basic',
+        additionalDrivers INT NOT NULL DEFAULT 0,
+        specialRequests TEXT,
+        agreeToTerms BOOLEAN NOT NULL DEFAULT TRUE,
         status ENUM('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED') NOT NULL DEFAULT 'PENDING',
         carId INT NOT NULL,
         tenantId INT NOT NULL,
